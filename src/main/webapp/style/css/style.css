@@ -1,0 +1,13 @@
+/* line 1, ../scss/style.scss */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: gray;
+}
+/* line 5, ../scss/style.scss */
+html h1, body h1 {
+  line-height: 50px;
+  text-align: center;
+}
+
+/*# sourceMappingURL=style.css.map */
