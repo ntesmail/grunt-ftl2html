@@ -61,11 +61,7 @@ module.exports = function(grunt) {
                 port: 9000,
                 // Change this to '0.0.0.0' to access the server from outside.
                 hostname: 'localhost',
-                livereload: 35129,
-                ftl2html: {
-                    // config file
-                    configFile: 'src/test/mock/project_config.cfg'
-                }
+                livereload: 35129
             },
             livereload: {
                 options: {
@@ -74,18 +70,20 @@ module.exports = function(grunt) {
                         var ftl2html = require('./index');
                         // ftl
                         var middlewares = [
-                            ftl2html(options),
+                            ftl2html.ftl2html({
+                                configFile: 'src/test/mock/project_config.cfg'
+                            }),
                             connect().use(
                                 '/style',
-                                connect.static('./src/main/webapp/style')
+                                connect.static('src/main/webapp/style')
                             ),
                             connect().use(
                                 '/js',
-                                connect.static('./src/main/webapp/js')
+                                connect.static('src/main/webapp/js')
                             ),
                             connect().use(
                                 '/xhr',
-                                connect.static('./test/mock/xhr')
+                                ftl2html.static('src/test/mock/xhr')
                             ),
                             connect.static(appConfig.app)
                         ];

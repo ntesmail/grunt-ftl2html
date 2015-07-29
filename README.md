@@ -9,12 +9,41 @@ module.exports = function(grunt) {
     // load all tasks
     require('load-grunt-tasks')(grunt);
 
+    var appConfig = {
+        app: 'src/main/webapp',
+        product: 'ftl2html',
+        dist: 'build',
+        mimgURLPrefix: {
+            develop: 'http://localhost/hxm',
+            online: 'http://mimg.127.net/hxm',
+            test: 'http://mimg.hztest.mail.163.com/hxm'
+        }
+    };
+    // static的版本路径
+    appConfig.staticPath = '/' + appConfig.product + '/p/20150510';
+    // app的发布目录
+    appConfig.appDist = appConfig.dist + '/' + appConfig.product;
+    // static的发布目录
+    appConfig.staticDist = appConfig.dist + '/static' + appConfig.staticPath;
+
     grunt.initConfig({
         // watch files
         watch: {
             compass: {
                 files: ['src/main/webapp/style/scss/**/{,*/}*.{scss,sass}'],
                 tasks: ['compass:server']
+            },
+            livereload: {
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                },
+                files: [
+                    'src/main/webapp/**/{,*/}*.html',
+                    'src/main/webapp/**/{,*/}*.ftl',
+                    'src/main/webapp/js/**/{,*/}*.js',
+                    'src/main/webapp/style/css/**/{,*/}*.css',
+                    'src/main/webapp/style/img/**/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+                ]
             }
         },
 
@@ -33,39 +62,51 @@ module.exports = function(grunt) {
                 }
             }
         },
-        // localserver config
-        localserver: {
-            // multiple task
-            dev: {
+        // The actual grunt server settings
+        connect: {
+            options: {
+                port: 9000,
+                // Change this to '0.0.0.0' to access the server from outside.
+                hostname: 'localhost',
+                livereload: 35129
+            },
+            livereload: {
                 options: {
-                    // the config file
-                    configFile: 'src/test/mock/project_config.cfg',
-                    // the port
-                    port: 8081,
-                    // default is true for async, if used with [watch], it should be set to false
-                    async: false
-                }
-            }
-        },
-        ftl2html: {
-            test: {
-                options: {
-                    baseDir: '../../../',
-                    sourceRoot: 'src/main/webapp/WEB-INF',
-                    files: [{
-                        ftl: '/tmpl/main.ftl',
-                        tdd: 'src/test/mock/tdd/oglobal.tdd,src/test/mock/tdd/main.tdd'
-                    }, {
-                        ftl: '/tmpl/test1.ftl',
-                        tdd: 'src/test/mock/tdd/oglobal.tdd,src/test/mock/tdd/test1.tdd'
-                    }]
+                    open: 'http://localhost:9000/demo/',
+                    middleware: function(connect, options) {
+                        var ftl2html = require('grunt-ftl2html');
+                        // ftl
+                        var middlewares = [
+                            ftl2html.ftl2html({
+                                configFile: 'src/test/mock/project_config.cfg'
+                            }),
+                            connect().use(
+                                '/style',
+                                connect.static('src/main/webapp/style')
+                            ),
+                            connect().use(
+                                '/js',
+                                connect.static('src/main/webapp/js')
+                            ),
+                            connect().use(
+                                '/xhr',
+                                ftl2html.static('src/test/mock/xhr')
+                            ),
+                            connect.static(appConfig.app)
+                        ];
+
+                        return middlewares;
+
+                    }
                 }
             }
         }
     });
 
-    grunt.registerTask('default', ['localserver:dev',  'watch']);
+    grunt.registerTask('default', ['connect:livereload', 'watch']);
+
 
 };
+
 
 ```

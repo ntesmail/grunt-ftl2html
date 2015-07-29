@@ -24,7 +24,8 @@
 
     <script type="text/javascript">
     $.ajax({
-        url : '/demo/xhr/user/getServerTime.do',
+        type: 'post',
+        url : '/xhr/user/getServerTime.do',
         success : function (res) {
             $('#time').html(new Date(res.data).toString());
         }
