@@ -89,7 +89,6 @@ module.exports = function(grunt) {
                         ];
 
                         return middlewares;
-
                     }
                 }
             }
@@ -98,5 +97,9 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', ['connect:livereload', 'watch']);
 
-
+    grunt.registerTask('convert', 'ftl to html', function(){
+        var ftl2html = require('./index');
+        ftl2html.convert('src/test/mock/ftl2html.cfg', 'http://localhost/test1-test.html', '');
+        ftl2html.convert('src/test/mock/ftl2html.cfg', 'http://localhost/main-test.html', '');
+    });
 };
