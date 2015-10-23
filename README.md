@@ -16,7 +16,7 @@ module.exports = function(grunt) {
         mimgURLPrefix: {
             develop: 'http://localhost/hxm',
             online: 'http://mimg.127.net/hxm',
-            test: 'http://mimg.hztest.mail.163.com/hxm'
+            test: 'http://mimg.127.net/hxm'
         }
     };
     // static的版本路径
@@ -108,5 +108,7 @@ module.exports = function(grunt) {
 
 };
 
+# 0.1.8
+rebuild in java 1.6
 
 ```
